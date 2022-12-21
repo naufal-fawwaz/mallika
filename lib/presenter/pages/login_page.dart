@@ -3,9 +3,12 @@ import 'dart:developer';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:malika/components/custom_button.dart';
-import 'package:malika/components/custom_text_field.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:malika/cubit/cubit.dart';
 import 'package:malika/themes.dart';
+import '../widgets/custom_button.dart';
+import '../widgets/custom_text_field.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -37,7 +40,7 @@ class LoginPage extends StatelessWidget {
     Widget headerTitle() {
       return Container(
         padding: EdgeInsets.only(
-          top: 42,
+          top: defaultMargin,
           right: defaultPadding,
           left: defaultPadding,
         ),
@@ -156,7 +159,9 @@ class LoginPage extends StatelessWidget {
             Expanded(
               child: CustomButton(
                 type: ButtonType.outlined,
-                onButtonClicked: () {},
+                onButtonClicked: () {
+                  context.read<AuthCubit>().signInGoogle();
+                },
                 title: 'Google',
                 imageAssets: 'images/ic_google.png',
               ),
@@ -233,51 +238,100 @@ class LoginPage extends StatelessWidget {
       );
     }
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          const Image(
-            image: AssetImage("images/img_login.png"),
-            width: double.infinity,
-            fit: BoxFit.cover,
-            height: 300,
-          ),
-          SingleChildScrollView(
-            controller: scrollController,
-            child: Container(
-              margin: const EdgeInsets.only(top: 200),
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(defaultMargin),
-                  topRight: Radius.circular(defaultMargin),
-                ),
-              ),
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  headerTitle(),
-                  const SizedBox(height: 36),
-                  inputEmail(),
-                  const SizedBox(height: 14),
-                  inputPassword(),
-                  SizedBox(height: defaultMargin),
-                  signInButton(),
-                  const SizedBox(height: 36),
-                  signInOtherOptionTitle(),
-                  const SizedBox(height: 36),
-                  appleSignInButton(),
-                  const SizedBox(height: 12),
-                  facebookGoogleSignInButton(),
-                  const SizedBox(height: 36),
-                  termsAndCondition(),
-                  SizedBox(height: defaultMargin)
+    void hideLoadingDialog() {
+      Navigator.pop(context);
+    }
+
+    Future<void> showLoadingDialog() {
+      return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Container(
+              padding: EdgeInsets.symmetric(vertical: defaultPadding),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  CircularProgressIndicator(),
                 ],
               ),
             ),
-          )
-        ],
+          );
+        },
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      body: BlocConsumer<AuthCubit, AuthState>(
+        listener: (context, state) {
+          if (state is AuthSuccess) {
+            hideLoadingDialog();
+            context.go('/main');
+          } else if (state is AuthLoading) {
+            showLoadingDialog();
+          }
+        },
+        builder: (context, state) {
+          return CustomScrollView(
+            clipBehavior: Clip.antiAlias,
+            controller: scrollController,
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 200.0,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: null,
+                  background: Image.asset(
+                    'images/img_login.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                elevation: 0,
+                bottom: PreferredSize(
+                  preferredSize: const Size(double.infinity, 20),
+                  child: Container(
+                    height: 30,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24),
+                      ),
+                      color: backgroundColor,
+                    ),
+                  ),
+                ),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return Column(
+                      children: [
+                        headerTitle(),
+                        SizedBox(height: defaultMargin + 12),
+                        inputEmail(),
+                        const SizedBox(height: 14),
+                        inputPassword(),
+                        SizedBox(height: defaultMargin),
+                        signInButton(),
+                        SizedBox(height: defaultMargin + 12),
+                        signInOtherOptionTitle(),
+                        SizedBox(height: defaultMargin + 12),
+                        appleSignInButton(),
+                        const SizedBox(height: 12),
+                        facebookGoogleSignInButton(),
+                        SizedBox(height: defaultMargin + 12),
+                        termsAndCondition(),
+                        SizedBox(height: defaultMargin),
+                      ],
+                    );
+                  },
+                  childCount: 1,
+                ),
+              )
+            ],
+          );
+        },
       ),
     );
   }

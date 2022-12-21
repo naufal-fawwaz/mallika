@@ -6,6 +6,7 @@ Color primaryColor = const Color(0xFFFF8527);
 Color borderColor = const Color(0xFFB3B4BA);
 Color hintTextColor = const Color(0xFFB3B4BA);
 Color outlineColor = const Color(0xFFE1E2E3);
+Color greyColor = const Color(0xFF363773);
 
 MaterialColor primary = const MaterialColor(
   0xFFFF8527,
@@ -50,6 +51,11 @@ TextStyle buttonTextStyle = GoogleFonts.nunito(
 TextStyle regularTextStyle = GoogleFonts.nunito(
   fontSize: 12,
   color: Colors.black,
+);
+
+TextStyle greyTextStyle = GoogleFonts.nunito(
+  fontSize: 16,
+  color: const Color(0xFF636773),
 );
 
 double defaultMargin = 24;
