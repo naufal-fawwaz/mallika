@@ -13,9 +13,11 @@ class AuthCubit extends Cubit<AuthState> {
       final user = await AuthService().signInWithGoogle();
       emit(AuthSuccess(user));
     } on FirebaseAuthException catch (e) {
-      emit(AuthFailed(e.message.toString()));
+      emit(AuthFailed(e.code));
+    } on AssertionError catch (_) {
+      emit(AuthFailed('Login dibatalkan'));
     } catch (e) {
-      emit(AuthFailed(e.toString()));
+      emit(AuthFailed(e.toString() + e.runtimeType.toString()));
     }
   }
 

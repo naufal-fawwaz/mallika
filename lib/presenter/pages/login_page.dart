@@ -238,13 +238,16 @@ class LoginPage extends StatelessWidget {
       );
     }
 
-    void hideLoadingDialog() {
-      Navigator.pop(context);
+    void hideDialog() {
+      if (context.canPop()) {
+        context.pop();
+      }
     }
 
     Future<void> showLoadingDialog() {
       return showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
             content: Container(
@@ -261,15 +264,44 @@ class LoginPage extends StatelessWidget {
       );
     }
 
+    Future<void> showErrorDialog(String message) {
+      return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Terjadi Kesalahan'),
+                Text(message),
+                SizedBox(
+                  height: defaultPadding,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    hideDialog();
+                  },
+                  child: const Text('Tutup'),
+                )
+              ],
+            ),
+          );
+        },
+      );
+    }
+
     return Scaffold(
       backgroundColor: backgroundColor,
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
-            hideLoadingDialog();
-            context.go('/main');
+            hideDialog();
+            context.go("/main");
           } else if (state is AuthLoading) {
             showLoadingDialog();
+          } else if (state is AuthFailed) {
+            hideDialog();
+            showErrorDialog(state.errorMessage);
           }
         },
         builder: (context, state) {
