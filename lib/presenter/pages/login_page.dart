@@ -86,8 +86,7 @@ class LoginPage extends StatelessWidget {
         child: CustomButton(
           type: ButtonType.solid,
           onButtonClicked: () {
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil('/onboarding', (route) => false);
+            context.go('/onboarding');
           },
           title: 'Sign In',
         ),

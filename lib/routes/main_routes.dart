@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:go_router/go_router.dart';
 import 'package:malika/presenter/pages/login_page.dart';
 import 'package:malika/presenter/pages/main_page.dart';

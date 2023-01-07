@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:malika/cubit/cubit.dart';
+import 'package:malika/presenter/pages/grocery_page.dart';
 import 'package:malika/presenter/pages/home_page.dart';
 import 'package:malika/presenter/pages/search_page.dart';
 import 'package:malika/themes.dart';
@@ -100,6 +101,8 @@ class _MainPageState extends State<MainPage> {
         return const HomePage();
       case 1:
         return const SearchRecipePage();
+      case 3:
+        return const GroceryPage();
       default:
         return const HomePage();
     }
