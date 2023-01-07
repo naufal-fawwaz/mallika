@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:malika/themes.dart';
@@ -8,8 +6,8 @@ class RecentSearchItem extends StatelessWidget {
   final double paddingTop;
   final double paddingBottom;
   final double paddingVertical;
-  final Function(int) onCardClicked;
-  final int value;
+  final Function() onCardClicked;
+  final String value;
 
   const RecentSearchItem({
     super.key,
@@ -23,7 +21,7 @@ class RecentSearchItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onCardClicked(value),
+      onTap: () => onCardClicked(),
       child: Column(
         children: [
           Container(

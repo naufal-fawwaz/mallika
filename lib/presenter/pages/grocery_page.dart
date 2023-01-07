@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:malika/cubit/grocery/checklist_cubit.dart';
+import 'package:malika/models/grocery_checklist.dart';
 import 'package:malika/presenter/widgets/grocery_checklist_item.dart';
 import 'package:malika/themes.dart';
 
@@ -44,7 +45,8 @@ class GroceryPage extends StatelessWidget {
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.done,
           onSubmitted: ((value) {
-            log(value);
+            context.read<ChecklistCubit>().addChecklist(value);
+            addItemController.clear();
           }),
         ),
       );
@@ -55,25 +57,40 @@ class GroceryPage extends StatelessWidget {
         context: context,
         builder: ((context) {
           return AlertDialog(
-            title: const Text('Delete All?'),
-            content: const Text('You Want delete?'),
+            title: Text(
+              'Delete All?',
+              style: titleTextStyle.copyWith(
+                fontSize: 24,
+              ),
+            ),
+            content: Text(
+              'You Want delete?',
+              style: subtitleTextStyle,
+            ),
             actions: [
               ElevatedButton(
                 onPressed: () {
+                  context.read<ChecklistCubit>().deleteAllChecklist();
                   Navigator.pop(context);
                 },
                 child: const Text('Yes'),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Close'),
+              ),
             ],
-            actionsAlignment: MainAxisAlignment.center,
+            actionsAlignment: MainAxisAlignment.end,
           );
         }),
       );
     }
 
-    return BlocConsumer<ChecklistCubit, Map<String, bool>>(
+    return BlocConsumer<ChecklistCubit, List<GroceryChecklist>>(
       listener: (context, state) {
-        log('State now $state');
+        log('State now ${DateTime.now()} $state');
       },
       builder: (context, state) {
         return Scaffold(
@@ -114,23 +131,22 @@ class GroceryPage extends StatelessWidget {
                 addNewItemSection(),
                 Container(
                   margin: EdgeInsets.only(top: defaultMargin),
-                  child: Column(
-                    children: state.entries
-                        .map(
-                          (e) => GroceryChecklistItem(
-                            key: UniqueKey(),
-                            onChanged: (key, isChecked) {
-                              log('Key is $key value is $isChecked');
-                              log('State is $state');
-                              context
-                                  .read<ChecklistCubit>()
-                                  .onCheckListUpdated(key, isChecked ?? false);
-                            },
-                            value: e.key,
-                            isChecked: e.value,
-                          ),
-                        )
-                        .toList(),
+                  child: ListView.builder(
+                    itemCount: state.length,
+                    shrinkWrap: true,
+                    primary: false,
+                    itemBuilder: (context, index) {
+                      return GroceryChecklistItem(
+                        key: UniqueKey(),
+                        onChanged: (isChecked) {
+                          context
+                              .read<ChecklistCubit>()
+                              .onCheckListUpdated(index, isChecked ?? false);
+                        },
+                        value: state[index].title,
+                        isChecked: state[index].isChecked,
+                      );
+                    },
                   ),
                 ),
               ],

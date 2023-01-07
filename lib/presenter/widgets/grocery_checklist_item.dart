@@ -1,11 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:malika/themes.dart';
 
 class GroceryChecklistItem extends StatelessWidget {
   final bool isChecked;
-  final Function(String, bool?) onChanged;
+  final Function(bool?) onChanged;
   final String value;
 
   const GroceryChecklistItem({
@@ -26,7 +24,7 @@ class GroceryChecklistItem extends StatelessWidget {
               Checkbox(
                 value: isChecked,
                 onChanged: ((isChecked) {
-                  onChanged(value, isChecked);
+                  onChanged(isChecked);
                 }),
                 shape: const CircleBorder(),
                 checkColor: primaryColor,

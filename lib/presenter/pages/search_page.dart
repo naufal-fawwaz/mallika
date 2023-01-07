@@ -6,14 +6,22 @@ import 'package:malika/presenter/widgets/last_seen_item.dart';
 import 'package:malika/presenter/widgets/recent_search_item.dart';
 import 'package:malika/themes.dart';
 
-class SearchRecipePage extends StatelessWidget {
+class SearchRecipePage extends StatefulWidget {
   const SearchRecipePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    List list = [1, 2, 3, 4];
-    final TextEditingController searchController = TextEditingController();
+  State<SearchRecipePage> createState() => _SearchRecipePageState();
+}
 
+class _SearchRecipePageState extends State<SearchRecipePage> {
+  final List<String> list = List.generate(4, ((index) {
+    return "Item ke $index";
+  }));
+
+  final TextEditingController searchController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.white,
@@ -73,18 +81,22 @@ class SearchRecipePage extends StatelessWidget {
     Widget recentSearchSection() {
       return Container(
         margin: EdgeInsets.only(top: defaultPadding),
-        child: Column(
-          children: list
-              .map(
-                (e) => RecentSearchItem(
-                  onCardClicked: (value) {
-                    list.remove(value);
-                    log('List not $list');
-                  },
-                  value: e,
-                ),
-              )
-              .toList(),
+        child: ListView.builder(
+          itemCount: list.length,
+          itemBuilder: (context, index) {
+            return RecentSearchItem(
+              key: UniqueKey(),
+              onCardClicked: () {
+                setState(() {
+                  list.removeAt(index);
+                  log(list.toString());
+                });
+              },
+              value: list[index],
+            );
+          },
+          shrinkWrap: true,
+          primary: false,
         ),
       );
     }
@@ -141,8 +153,10 @@ class SearchRecipePage extends StatelessWidget {
         child: Column(
           children: [
             searchBar(),
-            recentSearchSectionTitle(),
-            recentSearchSection(),
+            if (list.isNotEmpty) ...[
+              recentSearchSectionTitle(),
+              recentSearchSection(),
+            ],
             lastSeenTitle(),
             lastSeenSection(),
             SizedBox(
