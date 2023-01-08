@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:malika/cubit/cubit.dart';
 import 'package:malika/presenter/widgets/calendar_date_item.dart';
@@ -13,6 +13,13 @@ class CalendarPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
+
     final now = context.read<RecipeScheduleCubit>().state.date;
     final month = DateFormat('MMMM').format(now);
     final lastDateOnCurrentMonth = DateTime(now.year, now.month + 1, 0);

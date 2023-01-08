@@ -12,13 +12,6 @@ class OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-      ),
-    );
-
     final PageController pageController = PageController();
     List<OnboardingItemPage> pages = [
       const OnboardingItemPage(
@@ -46,70 +39,76 @@ class OnboardingPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: BlocConsumer<OnboardingPageCubit, int>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          return Stack(
-            children: [
-              PageView(
-                controller: pageController,
-                children: pages,
-                onPageChanged: (value) {
-                  context.read<OnboardingPageCubit>().setPage(value);
-                },
-              ),
-              Positioned(
-                bottom: defaultMargin,
-                left: 0,
-                right: 0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: pages.map(
-                    (e) {
-                      return Container(
-                        width: 8,
-                        height: 8,
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        decoration: pages.indexOf(e) == state
-                            ? BoxDecoration(
-                                color: primaryColor,
-                                borderRadius: BorderRadius.circular(4),
-                              )
-                            : BoxDecoration(
-                                color: backgroundColor,
-                                borderRadius: BorderRadius.circular(4),
-                                border: Border.all(
-                                  color: primaryColor,
-                                  width: 1,
-                                ),
-                              ),
-                      );
-                    },
-                  ).toList(),
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarBrightness: Brightness.light,
+        ),
+        child: BlocConsumer<OnboardingPageCubit, int>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            return Stack(
+              children: [
+                PageView(
+                  controller: pageController,
+                  children: pages,
+                  onPageChanged: (value) {
+                    context.read<OnboardingPageCubit>().setPage(value);
+                  },
                 ),
-              ),
-              state != pages.length - 1
-                  ? Positioned(
-                      right: defaultMargin,
-                      top: defaultMargin,
-                      child: BlackButton(
-                        title: 'Skip',
-                        onClick: () {
-                          pageController.animateToPage(
-                            pages.length - 1,
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.ease,
-                          );
-                        },
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 6),
-                        borderRadius: 18,
-                      ),
-                    )
-                  : const SizedBox(),
-            ],
-          );
-        },
+                Positioned(
+                  bottom: defaultMargin,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: pages.map(
+                      (e) {
+                        return Container(
+                          width: 8,
+                          height: 8,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: pages.indexOf(e) == state
+                              ? BoxDecoration(
+                                  color: primaryColor,
+                                  borderRadius: BorderRadius.circular(4),
+                                )
+                              : BoxDecoration(
+                                  color: backgroundColor,
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(
+                                    color: primaryColor,
+                                    width: 1,
+                                  ),
+                                ),
+                        );
+                      },
+                    ).toList(),
+                  ),
+                ),
+                state != pages.length - 1
+                    ? Positioned(
+                        right: defaultMargin,
+                        top: defaultMargin,
+                        child: BlackButton(
+                          title: 'Skip',
+                          onClick: () {
+                            pageController.animateToPage(
+                              pages.length - 1,
+                              duration: const Duration(milliseconds: 400),
+                              curve: Curves.ease,
+                            );
+                          },
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 6),
+                          borderRadius: 18,
+                        ),
+                      )
+                    : const SizedBox(),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

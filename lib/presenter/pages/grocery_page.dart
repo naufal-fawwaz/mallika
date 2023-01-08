@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:malika/cubit/grocery/checklist_cubit.dart';
@@ -14,6 +15,13 @@ class GroceryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final addItemController = TextEditingController();
+
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
 
     Widget addNewItemSection() {
       return Container(

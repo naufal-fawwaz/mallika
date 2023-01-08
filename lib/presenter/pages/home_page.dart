@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:malika/themes.dart';
 
 import '../widgets/cookbook_card.dart';
+import 'package:go_router/go_router.dart';
 import '../widgets/featured_recipe_item.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,13 +20,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: backgroundColor,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    );
-
     Widget profileHeader() {
       return Container(
         padding: EdgeInsets.only(
@@ -190,16 +184,19 @@ class _HomePageState extends State<HomePage> {
             const FeaturedRecipeItem(),
             SizedBox(height: defaultMargin * 2),
             const FeaturedRecipeItem(),
-            SizedBox(
-              height: defaultMargin,
-            ),
-            Text(
-              'Show All Recipe by Community',
-              style: regularTextStyle.copyWith(
-                color: primaryColor,
-                fontSize: 16,
+            SizedBox(height: defaultMargin),
+            GestureDetector(
+              onTap: () {
+                context.push('/community');
+              },
+              child: Text(
+                'Show All Recipe by Community',
+                style: regularTextStyle.copyWith(
+                  color: primaryColor,
+                  fontSize: 16,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
           ],
         ),
@@ -417,9 +414,19 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: backgroundColor,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
+
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: SafeArea(
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(
+          statusBarColor: backgroundColor,
+        ),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
