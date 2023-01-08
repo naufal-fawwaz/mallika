@@ -58,5 +58,10 @@ TextStyle greyTextStyle = GoogleFonts.nunito(
   color: const Color(0xFF636773),
 );
 
+TextStyle abelTextStyle = GoogleFonts.abel(
+  fontSize: 14,
+  color: Colors.black,
+);
+
 double defaultMargin = 24;
 double defaultPadding = 16;

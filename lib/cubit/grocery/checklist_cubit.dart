@@ -19,4 +19,10 @@ class ChecklistCubit extends Cubit<List<GroceryChecklist>> {
   void deleteAllChecklist() async {
     emit([]);
   }
+
+  void deleteChecklist(int index) {
+    List<GroceryChecklist> groceries = List.from(state);
+    groceries.removeAt(index);
+    emit(groceries);
+  }
 }

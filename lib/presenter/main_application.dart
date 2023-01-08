@@ -18,7 +18,8 @@ class MainApp extends StatelessWidget {
           cubit.getLoggedInUser();
           return cubit;
         }),
-        BlocProvider(create: ((context) => ChecklistCubit()))
+        BlocProvider(create: ((context) => ChecklistCubit())),
+        BlocProvider(create: (context) => RecipeScheduleCubit())
       ],
       child: MaterialApp.router(
         title: 'Mallika',
